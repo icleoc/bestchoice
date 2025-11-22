@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passagens Aéreas Mais Baratas</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Monitor de Passagens Aéreas</h1>
+        <p>Encontre as passagens mais baratas para qualquer lugar do mundo!</p>
+    </header>
+    
+    <!-- Formulário de busca -->
+    <form id="search-form">
+        <label for="origin">Origem (código IATA, ex.: GRU):</label>
+        <input type="text" id="origin" placeholder="GRU" required>
+        
+        <label for="destination">Destino (código IATA, ex.: JFK):</label>
+        <input type="text" id="destination" placeholder="JFK" required>
+        
+        <label for="departure-date">Data de Ida (AAAA-MM-DD):</label>
+        <input type="date" id="departure-date" required>
+        
+        <label for="return-date">Data de Volta (AAAA-MM-DD, opcional):</label>
+        <input type="date" id="return-date">
+        
+        <button type="submit">Buscar Passagens</button>
+    </form>
+    
+    <div id="flights-container">
+        <!-- Os cards serão inseridos aqui -->
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
