@@ -14,11 +14,17 @@
     
     <!-- Formulário de busca -->
     <form id="search-form">
-        <label for="origin">Origem (código IATA, ex.: GRU):</label>
-        <input type="text" id="origin" placeholder="GRU" required>
+        <label for="origin">Origem (código IATA ou nome, ex.: GRU ou São Paulo):</label>
+        <input type="text" id="origin" placeholder="GRU ou São Paulo" required list="airports-list">
+        <datalist id="airports-list">
+            <!-- Sugestões serão adicionadas via JS -->
+        </datalist>
         
-        <label for="destination">Destino (código IATA, ex.: JFK, opcional para filtrar):</label>
-        <input type="text" id="destination" placeholder="JFK">
+        <label for="destination">Destino (código IATA ou nome, ex.: JFK ou Nova York, opcional):</label>
+        <input type="text" id="destination" placeholder="JFK ou Nova York" list="airports-list-dest">
+        <datalist id="airports-list-dest">
+            <!-- Sugestões serão adicionadas via JS -->
+        </datalist>
         
         <button type="submit">Buscar Voos</button>
     </form>
