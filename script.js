@@ -35,7 +35,7 @@ function populateDatalist() {
 async function fetchFlights(origin, destination) {
     const apiKey = '14f94ea7f5f142ed54c177df4d2c7328';
     const originCode = getIataCode(origin);
-    let url = `http://api.aviationstack.com/v1/flights?access_key=${apiKey}&dep_iata=${originCode}&limit=20`;
+    let url = `https://api.aviationstack.com/v1/flights?access_key=${apiKey}&dep_iata=${originCode}&limit=20`; // Corrigido para HTTPS
 
     try {
         const response = await fetch(url);
