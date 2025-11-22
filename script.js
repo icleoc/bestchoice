@@ -1,20 +1,10 @@
-// Função para buscar voos da Kiwi.com API (gratuita, com preços)
-async function fetchFlights(origin, destination, departureDate, returnDate) {
-    const apiKey = 'SUA_CHAVE_KIWI_AQUI'; // Substitua pela sua chave da Kiwi.com (não use a chave AviationStack aqui)
-    let url = `https://tequila-api.kiwi.com/v2/search?fly_from=${origin}&fly_to=${destination}&date_from=${departureDate}&date_to=${departureDate}&adults=1&curr=BRL&limit=20`; // Limita a 20 resultados
-    
-    if (returnDate) {
-        url += `&return_from=${returnDate}&return_to=${returnDate}`; // Adiciona volta se fornecida
-    }
+// Função para buscar voos da AviationStack API (gratuita, dados em tempo real)
+async function fetchFlights(origin, destination) {
+    const apiKey = '14f94ea7f5f142ed54c177df4d2c7328'; // Sua chave fornecida
+    let url = `http://api.aviationstack.com/v1/flights?access_key=${apiKey}&dep_iata=${origin}&limit=20`; // Busca voos saindo de 'origin'
 
     try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'apikey': apiKey
-            }
-        });
-
+        const response = await fetch(url);
         if (!response.ok) {
             throw new Error('Erro na API: ' + response.status);
         }
@@ -22,23 +12,24 @@ async function fetchFlights(origin, destination, departureDate, returnDate) {
         const data = await response.json();
         console.log(data); // Para debug
 
-        // Processa e ordena por preço (menor para maior)
-        const flights = data.data
-            .sort((a, b) => a.price - b.price) // Ordena por preço ascendente
-            .slice(0, 10) // Mostra apenas as 10 mais baratas
-            .map(flight => {
-                const airline = flight.airlines[0] || 'Desconhecida';
-                const price = `R$ ${flight.price}`;
-                const link = flight.deep_link; // Link para reserva
+        // Filtra por destino se fornecido, e limita a 10
+        let flights = data.data.filter(flight => !destination || flight.arrival.iata === destination.toUpperCase()).slice(0, 10);
 
-                return {
-                    airline,
-                    origin: flight.cityFrom + ' (' + flight.flyFrom + ')',
-                    destination: flight.cityTo + ' (' + flight.flyTo + ')',
-                    price,
-                    link
-                };
-            });
+        flights = flights.map(flight => {
+            const airline = flight.airline?.name || 'Desconhecida';
+            const originText = flight.departure?.airport + ' (' + flight.departure?.iata + ')';
+            const destinationText = flight.arrival?.airport + ' (' + flight.arrival?.iata + ')';
+            const price = 'Preço não disponível (verifique em sites de reservas)'; // AviationStack não dá preços
+            const link = `https://www.google.com/flights?hl=pt-BR#flt=${flight.departure.iata}.${flight.arrival.iata}.${flight.departure.scheduled.split('T')[0]}`; // Link para Google Flights
+
+            return {
+                airline,
+                origin: originText,
+                destination: destinationText,
+                price,
+                link
+            };
+        });
 
         renderFlights(flights);
     } catch (error) {
@@ -73,11 +64,9 @@ function renderFlights(flights) {
 
 // Evento do formulário
 document.getElementById('search-form').addEventListener('submit', (e) => {
-    e.preventDefault(); // Evita reload da página
+    e.preventDefault(); // Evita reload
     const origin = document.getElementById('origin').value.toUpperCase();
-    const destination = document.getElementById('destination').value.toUpperCase();
-    const departureDate = document.getElementById('departure-date').value;
-    const returnDate = document.getElementById('return-date').value || null;
+    const destination = document.getElementById('destination').value.toUpperCase() || null;
 
-    fetchFlights(origin, destination, departureDate, returnDate);
+    fetchFlights(origin, destination);
 });
